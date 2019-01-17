@@ -33,6 +33,13 @@ def dup(x):
 def is_negative(n):
     return (n & (1 << (integer_w + fraction_w - 1))) != 0
 
+def fixed_from_float(n):
+    return (int)(n * (1 << fraction_w))
+
+def float_from_fixed(n):
+    return (float)(n) / (float)(1 << fraction_w)
+
+
 class FixedPointTestbench:
     def __init__(self, dut):
         self.dut = dut
