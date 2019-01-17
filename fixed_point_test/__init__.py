@@ -33,7 +33,7 @@ def dup(x):
 def is_negative(n):
     return (n & (1 << (integer_w + fraction_w - 1))) != 0
 
-class FloatingPointTestbench:
+class FixedPointTestbench:
     def __init__(self, dut):
         self.dut = dut
 
@@ -53,7 +53,7 @@ class FloatingPointTestbench:
 
         ir, fr = unpack_if(self.dut.result.value)
 
-        overflow = self.dut.overflow
+        overflow = self.dut.overflow.value
 
         raise ReturnValue((ir, fr, overflow))
 
