@@ -24,10 +24,10 @@ module fixed_point_sub
 
     assign result = result_flatten[$bits(fixed_point_t)-1:0];
 
-    assign op1_sign = op1_flatten[$bits(fixed_point_t) - 1];
-    assign op2_sign = op2_flatten[$bits(fixed_point_t) - 1];
+    assign op1_sign = op1_flatten < 0;
+    assign op2_sign = op2_flatten < 0;
 
-    assign result_sign = result_flatten[$bits(fixed_point_t) - 1];
+    assign result_sign = result_flatten < 0;
 
     assign overflow = (op1_sign != op2_sign) & (op2_sign == result_sign);
 
