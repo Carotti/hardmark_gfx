@@ -3,12 +3,16 @@ from cocotb.result import *
 from cocotb.triggers import ReadOnly, Timer
 import os
 import random
+import logging
 
 TOPLEVEL = os.getenv("TOPLEVEL")
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
-execfile(dir_path + "/test_" + TOPLEVEL + ".py")
+test_file = dir_path + "/test_" + TOPLEVEL + ".py"
+
+print(test_file)
+execfile(test_file)
 
 integer_w = 19
 fraction_w = 13
@@ -26,12 +30,15 @@ def pack_if(if_value):
 def dup(x):
     return x, x
 
-def is_positive(n):
+def is_negative(n):
     return (n & (1 << (integer_w + fraction_w - 1))) != 0
 
 class FloatingPointTestbench:
     def __init__(self, dut):
         self.dut = dut
+
+        self.log = logging.getLogger(self.__class__.__name__)
+        self.log.setLevel(logging.INFO)
 
     def set_inputs(self, op1, op2):
         op1_value = pack_if(op1)
@@ -55,7 +62,9 @@ class FloatingPointTestbench:
         integer, fraction = result
         integer_actual, fraction_actual, overflow_actual = yield self.get_result()
 
-        print("Inputs: {} and {}".format(self.dut.op1.value, self.dut.op2.value))
+        self.log.info("Operand1: {}".format(self.dut.op1.value))
+        self.log.info("Operand2: {}".format(self.dut.op2.value))
+        self.log.info("Result:   {}".format(self.dut.result.value))
 
         if (integer != integer_actual):
             raise TestFailure("Integer incorrect: Got {} Expected {}".format(integer_actual, integer))
