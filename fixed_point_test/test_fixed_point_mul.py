@@ -20,6 +20,12 @@ def signed_overflow(dut):
     tb.set_inputs((1 << (integer_w - 1), 0), (1 << (integer_w - 1), 0))
     yield tb.assert_result((0, 0), 1)
 
+@cocotb.test()
+def signed_unsigned_overflow(dut):
+    tb = FixedPointTestbench(dut)
+    tb.set_inputs((1 << (integer_w - 1), 0), (bitmask(integer_w - 1), bitmask(fraction_w)))
+    yield tb.assert_result((32, 0), 1)
+
 num_equivalence_tests = 100
 
 @cocotb.test()
@@ -34,10 +40,11 @@ def test_multiplication_equivalence(dut):
 
         result = op1 * op2
 
-        result_sign = ((result >> fixed_w) != 0)
+        result_sign = ((result >> fixed_w) == bitmask(fixed_w))
+        result_overflow = (not result_sign) & ((result >> fixed_w) != 0)
         result = (result >> fraction_w) & bitmask(fixed_w)
 
-        if (op1_sign != op2_sign) != result_sign:
+        if ((op1_sign != op2_sign) != result_sign) or result_overflow:
             overflow = 1
         else:
             overflow = 0

@@ -20,13 +20,17 @@ module fixed_point_mul
 
     wire result_sign;
 
+    wire result_overflow;
+
     assign op1_flatten = op1;
     assign op2_flatten = op2;
 
     assign op1_sign = op1_flatten < 0;
     assign op2_sign = op2_flatten < 0;
 
-    assign result_sign = |result_flatten[($bits(fixed_point_t)*2)-1:$bits(fixed_point_t)];
+    assign result_sign = &result_flatten[($bits(fixed_point_t)*2)-1:$bits(fixed_point_t)];
+
+    assign result_overflow = !result_sign & |result_flatten[($bits(fixed_point_t)*2)-1:$bits(fixed_point_t)];
 
     assign op1_flatten_abs = op1_sign ? -op1_flatten : op1_flatten;
     assign op2_flatten_abs = op2_sign ? -op2_flatten : op2_flatten;
@@ -35,6 +39,6 @@ module fixed_point_mul
 
     assign result = result_flatten >> `fraction_w;
 
-    assign overflow = (op1_sign ^ op2_sign) ^ result_sign;
+    assign overflow = ((op1_sign ^ op2_sign) ^ result_sign) | result_overflow;
 
 endmodule
