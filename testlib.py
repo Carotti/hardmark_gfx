@@ -5,6 +5,12 @@ integer_w = 19
 fraction_w = 13
 fixed_w = integer_w + fraction_w
 
+VEC_X = 0
+VEC_Y = 1
+VEC_Z = 2
+
+VEC_DIRS = [VEC_X, VEC_Y, VEC_Z]
+
 def bitmask(width):
     return (1 << width) - 1
 
@@ -54,3 +60,6 @@ def float_from_fixed(n):
     result = (float)(n) / (float)(1 << fraction_w)
 
     return -result if negative else result
+
+def make_fvec(x, y, z):
+    return fixed_from_float(x), fixed_from_float(y), fixed_from_float(z)
