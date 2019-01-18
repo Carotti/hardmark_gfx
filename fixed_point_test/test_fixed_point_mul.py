@@ -1,6 +1,7 @@
 from . import *
 import cocotb
 from cocotb.triggers import Timer
+from testlib import mul_operation
 
 @cocotb.test()
 def test_zero_l_positive(dut):
@@ -44,23 +45,4 @@ num_equivalence_tests = 100
 def test_multiplication_equivalence(dut):
     tb = FixedPointTestbench(dut)
 
-    def overflow_calc(op1, op2):
-        result = op1 * op2
-
-        op1_sign = is_negative(op1)
-        op2_sign = is_negative(op2)
-
-        result = op1 * op2
-
-        result_sign = ((result >> fixed_w) == bitmask(fixed_w))
-        result_overflow = (not result_sign) & ((result >> fixed_w) != 0)
-        result = (result >> fraction_w) & bitmask(fixed_w)
-
-        if (((op1_sign != op2_sign) != result_sign) and result != 0) or result_overflow:
-            overflow = 1
-        else:
-            overflow = 0
-
-        return result, overflow
-
-    yield tb.assert_equivalence_random(overflow_calc, num_equivalence_tests)
+    yield tb.assert_equivalence_random(mul_operation, num_equivalence_tests)
