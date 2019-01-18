@@ -32,17 +32,18 @@ num_equivalence_tests = 100
 def test_addition_equivalence(dut):
     tb = FixedPointTestbench(dut)
 
-    def add(x, y):
-        return x - y
+    def sub_operation(op1, op2):
+        result = (op1 - op2) & bitmask(fixed_w)
 
-    def overflow_calc(result, op1, op2):
         op1_sign = is_negative(op1)
         op2_sign = is_negative(op2)
         result_sign = is_negative(result)
 
         if (op1_sign != op2_sign and result_sign == op2_sign):
-            return 1
+            overflow = 1
         else:
-            return 0
+            overflow = 0
 
-    yield tb.assert_equivalence_random(add, overflow_calc, num_equivalence_tests)
+        return result, overflow
+
+    yield tb.assert_equivalence_random(sub_operation, num_equivalence_tests)
