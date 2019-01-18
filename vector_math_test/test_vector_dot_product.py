@@ -40,8 +40,8 @@ class DotProductTestbench:
             raise TestFailure("Overflow incorrect: Got {} Expected {}".format(overflow_actual, overflow))
 
 def positive_overflow(index):
-    op1 = [0, 0, 0]
-    op2 = [0, 0, 0]
+    op1 = [0 for _ in VEC_DIRS]
+    op2 = [0 for _ in VEC_DIRS]
     op1[index] = bitmask(fixed_w - 1)
     op2[index] = bitmask(fixed_w - 1)
     value = ( # Positive overflow in index
@@ -53,8 +53,8 @@ def positive_overflow(index):
     return value
 
 def total_overflow_positive(index):
-    op1 = [fixed_from_float(1) for _ in range(3)]
-    op2 = [1 for _ in range(3)]
+    op1 = [fixed_from_float(1) for _ in VEC_DIRS]
+    op2 = [1 for _ in VEC_DIRS]
     op2[index] = bitmask(fixed_w - 1)
     value = ( # Positive overflow on total sum only
         tuple(op1), 
@@ -93,8 +93,7 @@ inputs = [
     ),
 ] \
     + [positive_overflow(i) for i in VEC_DIRS] \
-    + [total_overflow_positive(i) for i in VEC_DIRS] \
-
+    + [total_overflow_positive(i) for i in VEC_DIRS]
 
 @cocotb.coroutine
 def run_test(dut, input_data):
