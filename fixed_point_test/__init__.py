@@ -28,12 +28,11 @@ def pack_if(if_value):
     i, f = if_value
     return ((i << fraction_w) & (bitmask(integer_w) << fraction_w)) | (f & bitmask(fraction_w))
 
-def dup(x):
-    return x, x
-
 def is_negative(n):
     return (n & (1 << (fixed_w - 1))) != 0
 
+def random_op():
+    return random.randint(0, 2 ** (fixed_w - 1))
 
 def fixed_from_float(n):
     if n < 0:
@@ -114,6 +113,6 @@ class FixedPointTestbench:
     def assert_equivalence_random(self, op, num):
 
         for _ in range(num):
-            operands = dup(random.randint(0, 2 ** (fixed_w - 1)))
+            operands = random_op(), random_op()
             yield self.assert_equivalence(operands, op)
             yield Timer(1)
