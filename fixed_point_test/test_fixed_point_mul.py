@@ -14,6 +14,12 @@ def test_zero_r(dut):
     tb.set_inputs((0, 0), (513, 13))
     yield tb.assert_result((0, 0), 0)
 
+@cocotb.test()
+def signed_overflow(dut):
+    tb = FixedPointTestbench(dut)
+    tb.set_inputs((1 << (integer_w - 1), 0), (1 << (integer_w - 1), 0))
+    yield tb.assert_result((0, 0), 1)
+
 num_equivalence_tests = 100
 
 @cocotb.test()
