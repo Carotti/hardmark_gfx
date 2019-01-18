@@ -2,62 +2,14 @@ import cocotb
 from cocotb.result import *
 from cocotb.triggers import ReadOnly, Timer
 import os
-import random
 import logging
 
+from testlib import *
+
 TOPLEVEL = os.getenv("TOPLEVEL")
-
 dir_path = os.path.dirname(os.path.realpath(__file__))
-
 test_file = dir_path + "/test_" + TOPLEVEL + ".py"
-
-print(test_file)
 execfile(test_file)
-
-integer_w = 19
-fraction_w = 13
-fixed_w = integer_w + fraction_w
-
-def bitmask(width):
-    return (1 << width) - 1
-
-def unpack_if(n):
-    return (n >> fraction_w) & bitmask(integer_w), n & bitmask(fraction_w)
-
-def pack_if(if_value):
-    i, f = if_value
-    return ((i << fraction_w) & (bitmask(integer_w) << fraction_w)) | (f & bitmask(fraction_w))
-
-def is_negative(n):
-    return (n & (1 << (fixed_w - 1))) != 0
-
-def random_op():
-    return random.randint(0, 2 ** (fixed_w - 1))
-
-def fixed_from_float(n):
-    if n < 0:
-        n = -n
-        negative = True
-    else:
-        negative = False
-
-    result = int(n * (1 << fraction_w))
-
-    if negative:
-        return (result ^ bitmask(fixed_w)) + 1
-    else:
-        return result
-
-def float_from_fixed(n):
-    n &= bitmask(fixed_w)
-    negative = n & (1 << (fixed_w - 1))
-
-    if negative:
-        n = (n ^ bitmask(fixed_w)) + 1
-
-    result = (float)(n) / (float)(1 << fraction_w)
-
-    return -result if negative else result
 
 class FixedPointTestbench:
     def __init__(self, dut):
