@@ -41,7 +41,7 @@ module fixed_point_mul
 
     assign result_flatten = op1_flatten * op2_flatten;
 
-    assign result = result_flatten >> `fraction_w;
+    assign result = result_flatten >> `FIXED_FRACTION_W;
 
     assign overflow = (((op1_sign ^ op2_sign) ^ result_sign) & ~result_zero) | result_overflow;
 
