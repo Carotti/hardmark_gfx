@@ -141,7 +141,6 @@ def normalize_vector_operation(v):
         if not scale_overflow and not dot_overflow:
             if dot_product <= fixed_from_float(1):
                 scalar += magnitude
-        print(bin(scalar))
     scaled_vec, scale_overflow = scalar_mul_operation(scalar, v)
     if scale_overflow:
         raise ValueError("That shouldn't happen!")
