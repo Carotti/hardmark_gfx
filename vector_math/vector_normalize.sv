@@ -17,21 +17,23 @@ module vector_normalize
 
     reg fixed_point_t [`FIXED_W:0] scalars;
 
-    wire vector_t [`FIXED_W-1:0] scalar_results;
-    wire [`FIXED_W-1:0] scalar_overflow;
+    wire vector_t [`FIXED_W:0] scalar_results;
+    wire [`FIXED_W:0] scalar_overflow;
 
     wire fixed_point_t [`FIXED_W-1:0] dot_results;
     wire [`FIXED_W-1:0] dot_overflow;
 
-    wire fixed_point_t test_bits [`FIXED_W-1:0] ;
+    wire fixed_point_t test_bits [`FIXED_W:0];
 
     wire signed [`FIXED_W-1:0] [`FIXED_W-1:0] packed_dot_results;
     wire signed [`FIXED_W-1:0] one;
     wire [`FIXED_W-1:0] dot_leq_one;
 
     assign one = (1 << `FIXED_FRACTION_W);
+    assign result = scalar_results[`FIXED_W];
+    assign test_bits[`FIXED_W] = 0;
 
-    for (g = 0; g < `FIXED_W; g = g + 1) begin : gen_scalar_mul
+    for (g = 0; g <= `FIXED_W; g = g + 1) begin : gen_scalar_mul
         vector_scalar_mul smul (
             .vector_op(temp_ops[g]),
             .scalar_op(scalars[g] | test_bits[g]),
@@ -54,12 +56,6 @@ module vector_normalize
         assign dot_leq_one[g] = packed_dot_results[g] <= one;
         assign test_bits[g] = (1 << (`FIXED_W - 1 - g));
     end
-
-    vector_scalar_mul result_smul (
-        .vector_op(temp_ops[`FIXED_W]),
-        .scalar_op(scalars[`FIXED_W]),
-        .result(result)
-    );
 
     always @(posedge clk) begin
         scalars[0] = '0;
