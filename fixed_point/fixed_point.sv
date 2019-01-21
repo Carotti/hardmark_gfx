@@ -13,4 +13,6 @@ package fixed_point;
         logic [`FIXED_FRACTION_W-1:0] f; 
     } fixed_point_t;
 
+    `define FIXED_W $bits(fixed_point_t)
+
 endpackage

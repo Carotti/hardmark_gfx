@@ -7,13 +7,13 @@ module fixed_point_mul
 );
     import fixed_point::*;
 
-    wire signed [($bits(fixed_point_t)*2)-1:0] result_flatten;
+    wire signed [(`FIXED_W*2)-1:0] result_flatten;
 
-    wire signed [$bits(fixed_point_t)-1:0] op1_flatten;
-    wire signed [$bits(fixed_point_t)-1:0] op2_flatten;
+    wire signed [`FIXED_W-1:0] op1_flatten;
+    wire signed [`FIXED_W-1:0] op2_flatten;
 
-    wire unsigned [$bits(fixed_point_t)-1:0] op1_flatten_abs;
-    wire unsigned [$bits(fixed_point_t)-1:0] op2_flatten_abs;
+    wire unsigned [`FIXED_W-1:0] op1_flatten_abs;
+    wire unsigned [`FIXED_W-1:0] op2_flatten_abs;
 
     wire op1_sign;
     wire op2_sign;
@@ -30,9 +30,9 @@ module fixed_point_mul
     assign op1_sign = op1_flatten < 0;
     assign op2_sign = op2_flatten < 0;
 
-    assign result_sign = &result_flatten[($bits(fixed_point_t)*2)-1:$bits(fixed_point_t)];
+    assign result_sign = &result_flatten[(`FIXED_W*2)-1:`FIXED_W];
 
-    assign result_overflow = !result_sign & |result_flatten[($bits(fixed_point_t)*2)-1:$bits(fixed_point_t)];
+    assign result_overflow = !result_sign & |result_flatten[(`FIXED_W*2)-1:`FIXED_W];
 
     assign result_zero = &(~result);
 

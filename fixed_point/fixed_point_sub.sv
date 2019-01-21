@@ -7,10 +7,10 @@ module fixed_point_sub
 );
     import fixed_point::*;
 
-    wire signed [$bits(fixed_point_t)-1:0] result_flatten;
+    wire signed [`FIXED_W-1:0] result_flatten;
 
-    wire signed [$bits(fixed_point_t)-1:0] op1_flatten;
-    wire signed [$bits(fixed_point_t)-1:0] op2_flatten;
+    wire signed [`FIXED_W-1:0] op1_flatten;
+    wire signed [`FIXED_W-1:0] op2_flatten;
 
     wire op1_sign;
     wire op2_sign;
@@ -22,7 +22,7 @@ module fixed_point_sub
 
     assign result_flatten = op1_flatten - op2_flatten;
 
-    assign result = result_flatten[$bits(fixed_point_t)-1:0];
+    assign result = result_flatten[`FIXED_W-1:0];
 
     assign op1_sign = op1_flatten < 0;
     assign op2_sign = op2_flatten < 0;
