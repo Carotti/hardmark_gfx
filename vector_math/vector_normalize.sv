@@ -13,9 +13,9 @@ module vector_normalize
     int i;
     genvar g;
 
-    reg vector_t [`FIXED_W-1:0] temp_ops;
+    reg vector_t [`FIXED_W:0] temp_ops;
 
-    reg fixed_point_t [`FIXED_W-1:0] scalars;
+    reg fixed_point_t [`FIXED_W:0] scalars;
 
     wire vector_t [`FIXED_W-1:0] scalar_results;
     wire [`FIXED_W-1:0] scalar_overflow;
@@ -55,21 +55,21 @@ module vector_normalize
         assign test_bits[g] = (1 << (`FIXED_W - 1 - g));
     end
 
+    vector_scalar_mul result_smul (
+        .vector_op(temp_ops[`FIXED_W]),
+        .scalar_op(scalars[`FIXED_W]),
+        .result(result)
+    );
+
     always @(posedge clk) begin
         scalars[0] = '0;
-        temp_ops[`FIXED_W-1:0] <= {temp_ops[`FIXED_W-2:0], op};
-        for (i = 0; i < `FIXED_W - 1; i = i + 1) begin
+        temp_ops[`FIXED_W:0] <= {temp_ops[`FIXED_W-1:0], op};
+        for (i = 0; i < `FIXED_W; i = i + 1) begin
             if ((~scalar_overflow[i] & ~dot_overflow[i]) & dot_leq_one[i]) begin
                 scalars[i + 1] <= scalars[i] | test_bits[i];
             end else begin
                 scalars[i + 1] <= scalars[i];
             end
-        end
-
-        if ((~scalar_overflow[i] & ~dot_overflow[i]) & dot_leq_one[i]) begin
-            result <= scalars[`FIXED_W-1] | test_bits[`FIXED_W-1];
-        end else begin
-            result <= scalars[`FIXED_W-1];
         end
     end
 
