@@ -82,34 +82,25 @@ def twos_complement_negate(x, width):
     return (x ^ bitmask(width)) + 1
 
 def signed_mul(op1, op2):
-    op1_neg = False
-    op2_neg = False
+    op1_sign = is_negative(op1)
+    op2_sign = is_negative(op2)
 
-    if is_negative(op1):
-        op1_neg = True
+    if op1_sign:
         op1 = twos_complement_negate(op1, fixed_w)
     
-    if is_negative(op2):
-        op2_neg = True
+    if op2_sign:
         op2 = twos_complement_negate(op2, fixed_w)
 
-    result = op1 * op2#
+    result = op1 * op2
 
-    result_neg = result & (1 << 2 * fixed_w - 1)
+    result_sign = result & (1 << 2 * fixed_w - 1)
 
-    if (op1_neg != op2_neg) and op1 != 0 and op2 != 0:
-        # Result should be negative
-        if not result_neg:
-            result = twos_complement_negate(result, 2 * fixed_w)
-    else:
-        # Result should be positive
-        if result_neg:
-            result = twos_complement_negate(result, 2 * fixed_w)
+    if (op1_sign != op2_sign) != result_sign:
+        result = twos_complement_negate(result, 2 * fixed_w)
 
     return result
 
 def mul_operation(op1, op2):
-
     op1_sign = is_negative(op1)
     op2_sign = is_negative(op2)
 
