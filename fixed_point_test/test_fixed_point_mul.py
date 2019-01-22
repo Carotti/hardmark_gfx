@@ -1,7 +1,7 @@
 from . import *
 import cocotb
 from cocotb.triggers import Timer
-from testlib import mul_operation
+from testlib import *
 
 @cocotb.test()
 def test_zero_l_positive(dut):
