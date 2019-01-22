@@ -40,11 +40,16 @@ def signed_unsigned_overflow(dut):
     yield tb.assert_result(unpack_if(1 << (integer_w - 1)), 1)
 
 @cocotb.test()
-def two_by_two(dut):
+def two_by_two_negative(dut):
     tb = FixedPointTestbench(dut)
     tb.set_inputs(unpack_if(fixed_from_float(-2)), unpack_if(fixed_from_float(-2)))
     yield tb.assert_result(unpack_if(fixed_from_float(4)), 0)
-    print(dut.result_flatten)
+
+@cocotb.test()
+def ten_by_ten_negative(dut):
+    tb = FixedPointTestbench(dut)
+    tb.set_inputs(unpack_if(fixed_from_float(-10)), unpack_if(fixed_from_float(-10)))
+    yield tb.assert_result(unpack_if(fixed_from_float(100)), 0)
 
 num_equivalence_tests = 100
 

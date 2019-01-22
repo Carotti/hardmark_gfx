@@ -1,6 +1,6 @@
 `define VECTOR_SUB_AXIS(axis) \
     wire axis``_overflow;\
-    fixed_point_sub axis1``axis2``_sub (\
+    fixed_point_sub axis``_sub (\
         .op1(op1.``axis),\
         .op2(op2.``axis),\
         .result(result.``axis),\
@@ -17,10 +17,36 @@ module vector_sub
     import fixed_point::*;
     import vector::*;
 
-    `VECTOR_SUB_AXIS(x);
-    `VECTOR_SUB_AXIS(y);
-    `VECTOR_SUB_AXIS(z);
+    wire x_overflow;
+    wire y_overflow;
+    wire z_overflow;
+
+    fixed_point_t result_x;
+    fixed_point_t result_y;
+    fixed_point_t result_z;
+
+    fixed_point_sub x_sub (
+        .op1(op1.x),
+        .op2(op2.x),
+        .result(result_x),
+        .overflow(x_overflow)
+    );
+
+    fixed_point_sub y_sub (
+        .op1(op1.y),
+        .op2(op2.y),
+        .result(result_y),
+        .overflow(y_overflow)
+    );
+
+    fixed_point_sub z_sub (
+        .op1(op1.z),
+        .op2(op2.z),
+        .result(result_z),
+        .overflow(z_overflow)
+    );
 
     assign overflow = x_overflow | y_overflow | z_overflow;
+    assign result = {result_x, result_y, result_z};
 
 endmodule

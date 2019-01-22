@@ -1,6 +1,6 @@
 `define VECTOR_ADD_AXIS(axis) \
     wire axis``_overflow;\
-    fixed_point_add axis1``axis2``_add (\
+    fixed_point_add axis``_add (\
         .op1(op1.``axis),\
         .op2(op2.``axis),\
         .result(result.``axis),\
@@ -17,10 +17,32 @@ module vector_add
     import fixed_point::*;
     import vector::*;
 
-    `VECTOR_ADD_AXIS(x);
-    `VECTOR_ADD_AXIS(y);
-    `VECTOR_ADD_AXIS(z);
+    wire x_overflow;
+    wire y_overflow;
+    wire z_overflow;
+
+    fixed_point_add x_add (
+        .op1(op1.x),
+        .op2(op2.x),
+        .result(result.x),
+        .overflow(x_overflow)
+    );
+
+    fixed_point_add y_add (
+        .op1(op1.y),
+        .op2(op2.y),
+        .result(result.y),
+        .overflow(y_overflow)
+    );
+
+    fixed_point_add z_add (
+        .op1(op1.z),
+        .op2(op2.z),
+        .result(result.z),
+        .overflow(z_overflow)
+    );
 
     assign overflow = x_overflow | y_overflow | z_overflow;
+    assign result = {result_x, result_y, result_z};
 
 endmodule

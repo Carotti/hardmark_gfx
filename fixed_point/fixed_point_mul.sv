@@ -32,7 +32,8 @@ module fixed_point_mul
 
     assign result_sign = &result_flatten[(`FIXED_W*2)-1:`FIXED_W];
 
-    assign result_overflow = !result_sign & |result_flatten[(`FIXED_W*2)-1:`FIXED_W];
+    // result_overflow = (result >> (fixed_w + fraction_w)) != 0 and not result_sign
+    assign result_overflow = !result_sign & |result_flatten[(`FIXED_W*2)-1:`FIXED_W + `FIXED_FRACTION_W];
 
     assign result_zero = &(~result);
 
