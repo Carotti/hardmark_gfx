@@ -11,6 +11,17 @@ VEC_Z = 2
 
 VEC_DIRS = [VEC_X, VEC_Y, VEC_Z]
 
+class VectorSignal:
+    def __init__(self, handle):
+        self.handle = handle
+
+    def assign_xyz(self, x, y, z):
+        self.handle.value = pack_vector(x, y, z)
+
+    def assign(self, v):
+        x, y, z = v
+        self.assign_xyz(x, y , z)
+
 def bitmask(width):
     return (1 << width) - 1
 
@@ -168,5 +179,7 @@ def normalize_vector_operation(v):
 
 def make_normalize_test(x, y, z):
     v = pack_vector(*tuple(map(fixed_from_float, (x, y, z))))
-    result = normalize_vector_operation(v)
-    return unpack_vector(result)
+    result = unpack_vector(normalize_vector_operation(v))
+    x, y, z = tuple(float_from_fixed(i) for i in result)
+    print(x ** 2 + y ** 2 + z ** 2)
+    return x, y, z
