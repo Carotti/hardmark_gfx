@@ -11,7 +11,7 @@
 `define VECTOR_ADD(axis1, axis2) \
     wire fixed_point_t axis1``axis2``_result;\
     wire axis1``axis2``_overflow;\
-    fixed_point_add axis1``axis2``_mul (\
+    fixed_point_add axis1``axis2``_add (\
         .op1(axis1``_result),\
         .op2(axis2``_result),\
         .result(axis1``axis2``_result),\
