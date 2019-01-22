@@ -12,7 +12,7 @@ def simple_test(dut):
 
     origin.assign(make_fvec(0, 0, 0))
     direction.assign(make_fvec(0, 0, 1))
-    center.assign(make_fvec(0, 0, 10))
+    center.assign(make_fvec(0, 10, 0))
 
     yield ReadOnly()
 
@@ -39,10 +39,12 @@ def simple_test(dut):
     wire discriminant_overflow;
     """
 
-    print(unpack_vector(dut.center_origin.value))
+    print(unpack_vector(dut.center_origin.value.integer))
     print(float_from_fixed(dut.dir_dot.value.integer))
     print(float_from_fixed(dut.dir_dot_sq.value.integer))
     print(float_from_fixed(dut.center_origin_mag_sq.value.integer))
+    print(float_from_fixed(dut.discriminant_partial.value.integer))
+    print(float_from_fixed(dut.discriminant.value.integer))
 
     print(dut.overflow)
 
