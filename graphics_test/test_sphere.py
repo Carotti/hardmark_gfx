@@ -39,8 +39,11 @@ def simple_test(dut):
     wire discriminant_overflow;
     """
 
-    print(dut.dir_dot)
+    print(unpack_vector(dut.center_origin.value))
+    print(float_from_fixed(dut.dir_dot.value.integer))
+    print(float_from_fixed(dut.dir_dot_sq.value.integer))
+    print(float_from_fixed(dut.center_origin_mag_sq.value.integer))
 
-    print(dut.dir_dot_sq_overflow)
-    print(dut.center_origin_mag_sq_overflow)
+    print(dut.overflow)
+
     print(dut.intersection)

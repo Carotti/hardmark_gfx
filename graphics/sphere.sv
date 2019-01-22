@@ -32,6 +32,7 @@ module sphere
     wire discriminant_overflow;
 
     wire overflow;
+    wire discriminant_sign;
 
     // o - c
     vector_sub center_origin_sub (
@@ -73,18 +74,18 @@ module sphere
         .overflow(radius_sq_overflow)
     );
 
-    // (l . (o - c)) ^ 2 - || o - c || ^ 2
+    // || o - c || ^ 2 - r ^ 2
     fixed_point_sub discriminant_partial_sub (
-        .op1(dir_dot_sq),
-        .op2(center_origin_mag_sq),
+        .op1(center_origin_mag_sq),
+        .op2(radius_sq),
         .result(discriminant_partial),
         .overflow(discriminant_partial_overflow)
     );
 
     // (l . (o - c)) ^ 2 - || o - c || ^ 2 - r ^ 2
     fixed_point_sub discriminant_sub (
-        .op1(discriminant_partial),
-        .op2(radius_sq),
+        .op1(dir_dot_sq),
+        .op2(discriminant_partial),
         .result(discriminant),
         .overflow(discriminant_overflow)
     );
@@ -97,6 +98,8 @@ module sphere
                         | discriminant_partial_overflow
                         | discriminant_overflow;
 
-    assign intersection.intersects = (discriminant >= 0) & ~overflow;
+    assign discriminant_sign = discriminant[`FIXED_W-1];
+
+    assign intersection.intersects = ~discriminant_sign & ~overflow;
 
 endmodule
