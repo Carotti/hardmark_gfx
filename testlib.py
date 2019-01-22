@@ -78,13 +78,42 @@ def add_operation(op1, op2):
 
     return result, overflow
 
+def twos_complement_negate(x, width):
+    return (x ^ bitmask(width)) + 1
+
+def signed_mul(op1, op2):
+    op1_neg = False
+    op2_neg = False
+
+    if is_negative(op1):
+        op1_neg = True
+        op1 = twos_complement_negate(op1, fixed_w)
+    
+    if is_negative(op2):
+        op2_neg = True
+        op2 = twos_complement_negate(op2, fixed_w)
+
+    result = op1 * op2#
+
+    result_neg = result & (1 << 2 * fixed_w - 1)
+
+    if (op1_neg != op2_neg) and op1 != 0 and op2 != 0:
+        # Result should be negative
+        if not result_neg:
+            result = twos_complement_negate(result, 2 * fixed_w)
+    else:
+        # Result should be positive
+        if result_neg:
+            result = twos_complement_negate(result, 2 * fixed_w)
+
+    return result
+
 def mul_operation(op1, op2):
-    result = op1 * op2
 
     op1_sign = is_negative(op1)
     op2_sign = is_negative(op2)
 
-    result = op1 * op2
+    result = signed_mul(op1, op2)
 
     result_sign = ((result >> fixed_w) == bitmask(fixed_w))
     result_overflow = (not result_sign) & ((result >> fixed_w) != 0)
@@ -134,9 +163,9 @@ def dot_product_operation(v1, v2):
 
 def normalize_vector_operation(v):
     scalar = 0
-    for bit in range(fixed_w - 1, -1, -1):
+    for bit in range(fixed_w - 2, -1, -1):
         magnitude = 1 << bit
-        scaled_vec, scale_overflow = scalar_mul_operation(scalar + magnitude, v)
+        scaled_vec, scale_overflow = scalar_mul_operation(scalar | magnitude, v)
         dot_product, dot_overflow = dot_product_operation(scaled_vec, scaled_vec)
         if not scale_overflow and not dot_overflow:
             if dot_product <= fixed_from_float(1):
@@ -145,3 +174,8 @@ def normalize_vector_operation(v):
     if scale_overflow:
         raise ValueError("That shouldn't happen!")
     return scaled_vec
+
+def make_normalize_test(x, y, z):
+    v = pack_vector(*tuple(map(fixed_from_float, (x, y, z))))
+    result = normalize_vector_operation(v)
+    return unpack_vector(result)

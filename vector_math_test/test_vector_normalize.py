@@ -4,6 +4,7 @@ import cocotb
 from cocotb.triggers import RisingEdge, ReadOnly, Timer
 from cocotb.clock import Clock
 from cocotb.result import ReturnValue, TestFailure
+from cocotb.regression import TestFactory
 from testlib import *
 
 class NormalizeTestbench:
@@ -64,21 +65,39 @@ class NormalizeTestbench:
         for _ in range(self.pipeline_latency):
             yield RisingEdge(self.dut.clk)
 
+inputs = [
+    (
+        make_fvec(-4.1, 3.1, -15),
+        make_fvec(-0.25830078125, 0.1951904296875, -0.94482421875),
+    ),
+]
+
+@cocotb.coroutine
+def run_test_single(dut, input_data):
+    tb = NormalizeTestbench(dut)
+    yield tb.initialize()
+
+    op, result = input_data
+    
+    yield tb.clock_input(op)
+    yield tb.flush_pipeline()
+    yield tb.assert_result(result)
+    
+tests = TestFactory(run_test_single)
+tests.add_option('input_data', inputs)
+generate_tests_for(tests)
+
 @cocotb.test()
 def pipeline_test(dut):
     tb = NormalizeTestbench(dut)
     yield tb.initialize()
 
-    yield tb.clock_input(make_fvec(-4.1, 3.1, -15))
-    yield tb.clock_input(make_fvec(1, 2, 3))
+    for i in range(min(fixed_w, len(inputs))):
+        op, _ = inputs[i]
+        yield tb.clock_input(op)
 
     yield tb.flush_pipeline()
 
-    yield tb.clock_assert_result(make_fvec(-0.25830078125, 0.1951904296875, -0.94482421875))
-    yield tb.clock_assert_result(unpack_vector(40379922796153575315879L))
-
-    yield tb.clock_input(make_fvec(3, 2, 1))
-
-    yield tb.flush_pipeline()
-
-    yield tb.clock_assert_result(make_fvec(0.8016357421875, 0.534423828125, 0.2672119140625))
+    for i in range(min(fixed_w, len(inputs))):
+        _, result = inputs[i]
+        yield tb.assert_result(result)
