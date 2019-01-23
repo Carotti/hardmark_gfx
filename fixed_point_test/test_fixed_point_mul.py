@@ -55,7 +55,7 @@ def ten_by_ten_negative(dut):
 def found_vector_test(dut):
     tb = FixedPointTestbench(dut)
     tb.set_inputs(unpack_if(3760), unpack_if(16760832))
-    yield tb.assert_result(unpack_if(16769696), 0)
+    yield tb.assert_result(unpack_if(7692960), 0)
 
 num_equivalence_tests = 100
 
