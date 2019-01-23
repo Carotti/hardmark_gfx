@@ -43,7 +43,6 @@ class SceneTestbench:
                 yield RisingEdge(self.dut.pixel_clk)
                 if x < self.width and y < self.height:
                     yield ReadOnly()
-                    print self.dut.view_ray
                     pixel = self.dut.pixel_data.value.integer
                     print x, y
                     print self.dut.pixel_data

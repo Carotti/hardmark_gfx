@@ -11,11 +11,15 @@ def simple_test(dut):
     ray = VectorSignal(dut.ray)
     center = VectorSignal(dut.center)
 
-    dut.radius.value = fixed_from_float(1.75)
+    dut.radius.value = fixed_from_float(0.0)
 
-    ray.assign(make_fvec(-0.7530517578125, 0.4705810546875, 0.458984375))
+    ray.assign(make_fvec(0, 0.1, 0.9))
     center.assign(make_fvec(0, 0, 2))
 
     yield ReadOnly()
 
     print(dut.intersection)
+
+    print(dut.overflow)
+    print(float_from_fixed(dut.discriminant_partial.value.integer))
+    print(float_from_fixed(dut.dir_dot_sq.value.integer))

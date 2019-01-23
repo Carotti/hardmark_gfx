@@ -25,10 +25,10 @@ module scene (
         .intersection(sphere_1_intersection)
     );
 
-    assign sphere_radius = 24'h3800; // 1.75
+    assign sphere_radius = 'h3800; // 1.75
     assign sphere_center.x = 0;
     assign sphere_center.y = 0;
-    assign sphere_center.z = 2;
+    assign sphere_center.z = 'h4000; // 2.0
 
     assign pixel_data = sphere_1_intersection.intersects ? 32'hff0000ff : 32'h000000ff;
 
