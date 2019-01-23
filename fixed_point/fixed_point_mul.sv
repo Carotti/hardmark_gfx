@@ -30,7 +30,7 @@ module fixed_point_mul
     assign op1_sign = op1_flatten < 0;
     assign op2_sign = op2_flatten < 0;
 
-    assign result_sign = &result_flatten[(`FIXED_W*2)-1:`FIXED_W];
+    assign result_sign = &result_flatten[(`FIXED_W*2)-1:`FIXED_W + `FIXED_FRACTION_W];
 
     // result_overflow = (result >> (fixed_w + fraction_w)) != 0 and not result_sign
     assign result_overflow = !result_sign & |result_flatten[(`FIXED_W*2)-1:`FIXED_W + `FIXED_FRACTION_W];

@@ -51,6 +51,12 @@ def ten_by_ten_negative(dut):
     tb.set_inputs(unpack_if(fixed_from_float(-10)), unpack_if(fixed_from_float(-10)))
     yield tb.assert_result(unpack_if(fixed_from_float(100)), 0)
 
+@cocotb.test()
+def found_vector_test(dut):
+    tb = FixedPointTestbench(dut)
+    tb.set_inputs(unpack_if(3760), unpack_if(16760832))
+    yield tb.assert_result(unpack_if(16769696), 0)
+
 num_equivalence_tests = 100
 
 @cocotb.test()
