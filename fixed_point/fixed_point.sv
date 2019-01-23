@@ -1,7 +1,7 @@
 package fixed_point;
 
     `ifndef FIXED_INTEGER_W
-    `define FIXED_INTEGER_W 19
+    `define FIXED_INTEGER_W 11
     `endif
 
     `ifndef FIXED_FRACTION_W

@@ -1,7 +1,7 @@
 
 import random
 
-integer_w = 19
+integer_w = 11
 fraction_w = 13
 fixed_w = integer_w + fraction_w
 
@@ -71,6 +71,9 @@ def float_from_fixed(n):
     result = (float)(n) / (float)(1 << fraction_w)
 
     return -result if negative else result
+
+def float_from_fixed_vector(x, y, z):
+    return float_from_fixed(x), float_from_fixed(y), float_from_fixed(z)
 
 def make_fvec(x, y, z):
     return fixed_from_float(x), fixed_from_float(y), fixed_from_float(z)

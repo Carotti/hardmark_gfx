@@ -30,7 +30,7 @@ module vector_normalize
     wire signed [`FIXED_W-1:0] [`PIPELINE_STAGES-1:0] packed_dot_results;
     wire [`PIPELINE_STAGES-1:0] dot_leq_one;
 
-    wire signed [`FIXED_W-1:0] one;
+    wire fixed_point_t one;
 
     wire fixed_point_t test_bits [`PIPELINE_STAGES:0];
 

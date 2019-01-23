@@ -15,7 +15,7 @@ class NormalizeTestbench:
         self.log = logging.getLogger(self.__class__.__name__)
         self.log.setLevel(logging.INFO)
 
-        self.pipeline_latency = fixed_w - 1
+        self.pipeline_latency = fixed_w
 
     @cocotb.coroutine
     def initialize(self):
@@ -65,6 +65,7 @@ class NormalizeTestbench:
             yield RisingEdge(self.dut.clk)
 
 inputs = [
+    make_fvec(1, 1, 1),
     make_fvec(-4.1, 3.1, -15),
     make_fvec(734, 12, -0.4),
     make_fvec(-1342, 0.005, -12),
