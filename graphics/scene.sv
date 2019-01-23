@@ -25,9 +25,11 @@ module scene (
         .intersection(sphere_1_intersection)
     );
 
-    assign sphere_radius = (1 << `FIXED_FRACTION_W);
-    assign sphere_center = {32'd0, 32'd0, 32'd2 << `FIXED_FRACTION_W};
+    assign sphere_radius = 24'h3800; // 1.75
+    assign sphere_center.x = 0;
+    assign sphere_center.y = 0;
+    assign sphere_center.z = 2;
 
-    assign pixel_data = sphere_1_intersection.intersects ? 32'hff0000ff : 32'h0;
+    assign pixel_data = sphere_1_intersection.intersects ? 32'hff0000ff : 32'h000000ff;
 
 endmodule

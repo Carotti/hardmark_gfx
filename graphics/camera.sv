@@ -3,17 +3,15 @@ module camera
     input pixel_clk,
     output vector::vector_t ray
 );
-    parameter hWidth = 1024;
-    parameter hFrontPorch = 24;
-    parameter hBackPorch = 160;
-    parameter hSyncWidth = 136;
+    parameter hWidth = 1680;
+    parameter hFrontPorch = 48;
+    parameter hBackPorch = 80;
+    parameter hSyncWidth = 32;
     
-    parameter vWidth = 768;
-    parameter vFrontPorch = 9;
-    parameter vBackPorch = 23;
+    parameter vWidth = 1050;
+    parameter vFrontPorch = 3;
+    parameter vBackPorch = 21;
     parameter vSyncWidth = 6;
-
-    parameter fov_shift = 1;
 
     import fixed_point::*;
     import vector::*;
@@ -35,9 +33,10 @@ module camera
     assign hReset = (hCount == hWidth + hFrontPorch + hSyncWidth + hBackPorch - 1);
     assign vReset = (vCount == vWidth + vFrontPorch + vSyncWidth + vBackPorch - 1);
 
-    assign unnormalized_ray.x = (hCount - hWidth / 2) << fov_shift;
-    assign unnormalized_ray.y = (vWidth / 2 - vCount) << fov_shift;
-    assign unnormalized_ray.z = 1;
+    // 5 Makes the normalization accuracy pretty good
+    assign unnormalized_ray.x = (hCount - hWidth / 2) << 5;
+    assign unnormalized_ray.y = (vWidth / 2 - vCount) << 5;
+    assign unnormalized_ray.z = 24'h4000; // Fixed point 2
 
     initial hCount = 0;
     initial vCount = 0;

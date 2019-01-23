@@ -43,6 +43,7 @@ class SceneTestbench:
                 yield RisingEdge(self.dut.pixel_clk)
                 if x < self.width and y < self.height:
                     yield ReadOnly()
+                    print self.dut.view_ray
                     pixel = self.dut.pixel_data.value.integer
                     print x, y
                     print self.dut.pixel_data
@@ -50,7 +51,7 @@ class SceneTestbench:
                     g = (pixel >> 16) & bitmask(8)
                     b = (pixel >> 8) & bitmask(8)
                     a = pixel & bitmask(8)
-                    image.putpixel((x, 0), (r, g, b, a))
+                    image.putpixel((x, y), (r, g, b, a))
 
         image.save("tmp.png")
 

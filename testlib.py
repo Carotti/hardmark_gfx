@@ -75,6 +75,10 @@ def float_from_fixed(n):
 def make_fvec(x, y, z):
     return fixed_from_float(x), fixed_from_float(y), fixed_from_float(z)
 
+def make_fvec_packed(x, y, z):
+    xn, yn, zn = make_fvec(x, y, z)
+    return pack_vector(xn, yn, zn)
+
 def add_operation(op1, op2):
     result = (op1 + op2) & bitmask(fixed_w)
 
