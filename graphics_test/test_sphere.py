@@ -2,17 +2,19 @@ import cocotb
 from cocotb.triggers import ReadOnly
 from testlib import *
 
+@cocotb.test(skip=True)
+def draw_image(dut):
+    yield ReadOnly()
+
 @cocotb.test()
 def simple_test(dut):
-    origin = VectorSignal(dut.view_origin)
-    direction = VectorSignal(dut.view_direction)
+    ray = VectorSignal(dut.ray)
     center = VectorSignal(dut.center)
 
     dut.radius.value = fixed_from_float(1)
 
-    origin.assign(make_fvec(0, 0, 0))
-    direction.assign(make_fvec(0, 0, 1))
-    center.assign(make_fvec(0, 10, 0))
+    ray.assign(make_fvec(0, 0, 1))
+    center.assign(make_fvec(0, 1.1, -10))
 
     yield ReadOnly()
 
@@ -39,13 +41,13 @@ def simple_test(dut):
     wire discriminant_overflow;
     """
 
-    print(unpack_vector(dut.center_origin.value.integer))
-    print(float_from_fixed(dut.dir_dot.value.integer))
-    print(float_from_fixed(dut.dir_dot_sq.value.integer))
-    print(float_from_fixed(dut.center_origin_mag_sq.value.integer))
-    print(float_from_fixed(dut.discriminant_partial.value.integer))
-    print(float_from_fixed(dut.discriminant.value.integer))
+    # print(unpack_vector(dut.center_origin.value.integer))
+    # print(float_from_fixed(dut.dir_dot.value.integer))
+    # print(float_from_fixed(dut.dir_dot_sq.value.integer))
+    # print(float_from_fixed(dut.center_origin_mag_sq.value.integer))
+    # print(float_from_fixed(dut.discriminant_partial.value.integer))
+    # print(float_from_fixed(dut.discriminant.value.integer))
 
-    print(dut.overflow)
+    # print(dut.overflow)
 
     print(dut.intersection)

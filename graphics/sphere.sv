@@ -1,7 +1,6 @@
 module sphere
 (
-    input vector::vector_t view_origin, // o
-    input vector::vector_t view_direction, // l - Must be normalized
+    input vector::vector_t ray, // l - Must be normalized ray coming from origin
     input vector::vector_t center, // c
     input fixed_point::fixed_point_t radius, // r
     output graphics::intersection_t intersection
@@ -36,7 +35,7 @@ module sphere
 
     // o - c
     vector_sub center_origin_sub (
-        .op1(view_origin),
+        .op1(0), // Assume that the ray originated from the origin
         .op2(center),
         .result(center_origin),
         .overflow(center_origin_overflow)
@@ -44,7 +43,7 @@ module sphere
 
     // l . (o - c)
     vector_dot_product dir_vdot (
-        .op1(view_direction),
+        .op1(ray),
         .op2(center_origin),
         .result(dir_dot),
         .overflow(dir_dot_overflow)
@@ -60,8 +59,8 @@ module sphere
 
     // || o - c || ^ 2
     vector_dot_product center_origin_mag_sq_vdot (
-        .op1(center_origin),
-        .op2(center_origin),
+        .op1(center),
+        .op2(center),
         .result(center_origin_mag_sq),
         .overflow(center_origin_mag_sq_overflow)
     );
