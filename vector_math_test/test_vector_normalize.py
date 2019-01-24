@@ -15,7 +15,7 @@ class NormalizeTestbench:
         self.log = logging.getLogger(self.__class__.__name__)
         self.log.setLevel(logging.INFO)
 
-        self.pipeline_latency = fixed_w
+        self.pipeline_latency = fixed_w * 2
 
     @cocotb.coroutine
     def initialize(self):
@@ -52,9 +52,6 @@ class NormalizeTestbench:
 
     @cocotb.coroutine
     def clock_assert_result(self, result):
-        if self.pipeline_latency > fixed_w:
-            raise ValueError("This output is undefined for this pipeline depth")
-
         yield self.assert_result(result)
         yield RisingEdge(self.dut.clk)
         self.pipeline_latency += 1
@@ -88,7 +85,7 @@ def run_test_single(dut, input_data):
     
     yield tb.clock_input(op)
     yield tb.flush_pipeline()
-    yield tb.assert_result(unpack_vector(result))
+    yield tb.clock_assert_result(unpack_vector(result))
     
 tests = TestFactory(run_test_single)
 tests.add_option('input_data', inputs)

@@ -13,11 +13,22 @@ module vector_normalize
     import fixed_point::*;
     import vector::*;
 
+    initial
+    begin
+        $dumpfile("test.vcd");
+        $dumpvars(0,vector_normalize);
+    end
+
     int i;
     genvar g;
 
+    vector_t [`PIPELINE_STAGES:0] temp_ops_reg;
     vector_t [`PIPELINE_STAGES:0] temp_ops;
+    fixed_point_t [`PIPELINE_STAGES:0] scalars_reg;
     fixed_point_t [`PIPELINE_STAGES:0] scalars;
+
+    vector_t [`PIPELINE_STAGES:0] scalar_results_reg;
+    reg [`PIPELINE_STAGES:0] scalar_overflow_reg;
 
     wire vector_t [`PIPELINE_STAGES:0] scalar_results;
     wire [`PIPELINE_STAGES:0] scalar_overflow;
@@ -49,8 +60,8 @@ module vector_normalize
 
     for (g = 0; g < `PIPELINE_STAGES; g = g + 1) begin : gen_vector_dot
         vector_dot_product vdot (
-            .op1(scalar_results[g]),
-            .op2(scalar_results[g]),
+            .op1(scalar_results_reg[g]),
+            .op2(scalar_results_reg[g]),
             .result(dot_results[g]),
             .overflow(dot_overflow[g])
         );
@@ -62,14 +73,23 @@ module vector_normalize
         assign test_bits[g] = (1 << (`PIPELINE_STAGES - 1 - g));
     end
 
+    initial scalars[0] = '0;
+
     always @(posedge clk) begin
-        scalars[0] = '0;
-        temp_ops[`PIPELINE_STAGES:0] <= {temp_ops[`PIPELINE_STAGES-1:0], op};
+        temp_ops[0] <= op;
         for (i = 0; i < `PIPELINE_STAGES; i = i + 1) begin
-            if ((~scalar_overflow[i] & ~dot_overflow[i]) & dot_leq_one[i]) begin
-                scalars[i + 1] <= scalars[i] | test_bits[i];
+            temp_ops_reg[i] <= temp_ops[i];
+            temp_ops[i + 1] <= temp_ops_reg[i];
+
+            scalar_results_reg[i] <= scalar_results[i];
+            scalar_overflow_reg[i] <= scalar_overflow[i];
+
+            scalars_reg[i] <= scalars[i];
+
+            if ((~scalar_overflow_reg[i] & ~dot_overflow[i]) & dot_leq_one[i]) begin
+                scalars[i + 1] <= scalars_reg[i] | test_bits[i];
             end else begin
-                scalars[i + 1] <= scalars[i];
+                scalars[i + 1] <= scalars_reg[i];
             end
         end
         result <= scalar_results[`PIPELINE_STAGES];
