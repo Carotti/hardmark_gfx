@@ -64,7 +64,6 @@ class NormalizeTestbench:
         for _ in range(self.pipeline_latency):
             yield RisingEdge(self.dut.clk)
             yield ReadOnly()
-            print self.dut.dot_overflow
 
 inputs = [
     make_fvec(1, 1, 1),
