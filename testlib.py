@@ -122,11 +122,11 @@ def mul_operation(op1, op2):
     op1_sign = is_negative(op1)
     op2_sign = is_negative(op2)
 
-    result = signed_mul(op1, op2)
+    long_result = signed_mul(op1, op2)
 
-    result_sign = ((result >> (fixed_w + fraction_w)) == bitmask(integer_w))
-    result_overflow = (result >> (fixed_w + fraction_w)) != 0 and not result_sign
-    result = (result >> fraction_w) & bitmask(fixed_w)
+    result = (long_result >> fraction_w) & bitmask(fixed_w)
+    result_sign = result >> (fixed_w - 1)
+    result_overflow = (long_result >> (fixed_w + fraction_w)) != 0 and not result_sign
 
     if (((op1_sign != op2_sign) != result_sign) and result != 0) | result_overflow:
         overflow = 1
