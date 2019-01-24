@@ -91,6 +91,12 @@ inputs = [
         fixed_from_float(-6.5),
         0,
     ),
+    (
+        make_fvec(-31.4375, 32.5625, 32.0),
+        make_fvec(-31.4375, 32.5625, 32.0),
+        fixed_from_float(-1023.3671875),
+        1,
+    ),
 ] \
     + [positive_overflow(i) for i in VEC_DIRS] \
     + [total_overflow_positive(i) for i in VEC_DIRS]

@@ -67,13 +67,25 @@ def ten_by_ten(dut):
 def found_vector_test1(dut):
     tb = FixedPointTestbench(dut)
     tb.set_inputs(unpack_if(3760), unpack_if(16760832))
-    yield tb.assert_result(unpack_if(7692960), 0)
+    yield tb.assert_result((2047,672), 0)
 
 @cocotb.test()
 def found_vector_test2(dut):
     tb = FixedPointTestbench(dut)
     tb.set_inputs(unpack_if(fixed_from_float(0.05)), unpack_if(fixed_from_float(19.65576171875)))
     yield tb.assert_result(unpack_if(8039), 0)
+
+@cocotb.test()
+def line_test(dut):
+    tb = FixedPointTestbench(dut)
+    tb.set_inputs(unpack_if(fixed_from_float(32.5625)), unpack_if(fixed_from_float(32.5625)))
+    yield ReadOnly()
+    print dut.result_sign
+    print dut.op1_sign
+    print dut.op2_sign
+    print dut.result_overflow
+    yield tb.assert_result((1060, 2592), 1)
+    
 
 num_equivalence_tests = 100
 

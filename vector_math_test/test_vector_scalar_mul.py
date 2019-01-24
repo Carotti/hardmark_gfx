@@ -83,8 +83,13 @@ inputs = [
         make_fvec(1.25, 3.125, 0),
         0,
     ),
-] \
-    + [positive_overflow(i) for i in VEC_DIRS]
+    ( # 32
+        fixed_from_float(16),
+        make_fvec(-1.96484375, 2.03515625, 2.0),
+        make_fvec(-31.4375, 32.5625, 32.0),
+        0,
+    ),
+]
 
 @cocotb.coroutine
 def run_test(dut, input_data):

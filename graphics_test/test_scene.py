@@ -46,13 +46,6 @@ class SceneTestbench:
                     pixel = self.dut.pixel_data.value.integer
                     print x, y
                     print self.dut.pixel_data
-
-                    if ((x == 311 or x == 312 or x == 313) and y == 4):
-                        print self.dut.main_camera.unnormalized_ray
-
-                    if (x == 336 and y == 4):
-                        raise TestSuccess()
-                    
                     r = (pixel >> 24) & bitmask(8)
                     g = (pixel >> 16) & bitmask(8)
                     b = (pixel >> 8) & bitmask(8)
