@@ -20,7 +20,7 @@ class SceneTestbench:
         self.total_width = SceneTestbench.get_total_size(cam.hWidth, cam.hFrontPorch, cam.hSyncWidth, cam.hBackPorch)
         self.total_height = SceneTestbench.get_total_size(cam.vWidth, cam.vFrontPorch, cam.vSyncWidth, cam.vBackPorch)
 
-        self.pipeline_latency = fixed_w - 1
+        self.pipeline_latency = fixed_w + 3
 
     @cocotb.coroutine
     def initialize(self):

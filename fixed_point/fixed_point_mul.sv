@@ -30,10 +30,6 @@ module fixed_point_mul
     assign op1_sign = op1_flatten < 0;
     assign op2_sign = op2_flatten < 0;
 
-    // result_sign = ((result >> (fixed_w + fraction_w)) == bitmask(integer_w))
-    // result_overflow = (result >> (fixed_w + fraction_w)) != 0 and not result_sign
-    // result = (result >> fraction_w) & bitmask(fixed_w)
-
     assign result_sign = result[`FIXED_W-1];
 
     // result_overflow = (result >> (fixed_w + fraction_w)) != 0 and not result_sign

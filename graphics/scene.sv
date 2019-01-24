@@ -19,6 +19,7 @@ module scene (
     );
 
     sphere sphere_1 (
+        .pixel_clk(pixel_clk),
         .ray(view_ray),
         .radius(sphere_radius),
         .center(sphere_center),

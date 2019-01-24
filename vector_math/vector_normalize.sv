@@ -16,9 +16,8 @@ module vector_normalize
     int i;
     genvar g;
 
-    reg vector_t [`PIPELINE_STAGES:0] temp_ops;
-
-    reg fixed_point_t [`PIPELINE_STAGES:0] scalars;
+    vector_t [`PIPELINE_STAGES:0] temp_ops;
+    fixed_point_t [`PIPELINE_STAGES:0] scalars;
 
     wire vector_t [`PIPELINE_STAGES:0] scalar_results;
     wire [`PIPELINE_STAGES:0] scalar_overflow;
@@ -38,7 +37,6 @@ module vector_normalize
     assign test_bits[`PIPELINE_STAGES] = 0;
 
     assign one = (1 << `FIXED_FRACTION_W);
-    assign result = scalar_results[`PIPELINE_STAGES];
 
     for (g = 0; g <= `PIPELINE_STAGES; g = g + 1) begin : gen_scalar_mul
         vector_scalar_mul smul (
@@ -74,6 +72,7 @@ module vector_normalize
                 scalars[i + 1] <= scalars[i];
             end
         end
+        result <= scalar_results[`PIPELINE_STAGES];
     end
 
 endmodule

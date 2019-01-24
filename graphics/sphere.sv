@@ -1,5 +1,6 @@
 module sphere
 (
+    input pixel_clk,
     input vector::vector_t ray, // l - Must be normalized ray coming from origin
     input vector::vector_t center, // c
     input fixed_point::fixed_point_t radius, // r
@@ -9,8 +10,17 @@ module sphere
     import vector::*;
     import graphics::*;
 
+    vector_t ray_reg;
+
+    vector_t center_origin_reg;
+    reg center_origin_overflow_reg1;
+    reg center_origin_overflow_reg2;
+
     wire vector_t center_origin;
     wire center_origin_overflow;
+
+    fixed_point_t dir_dot_reg;
+    reg dir_dot_overflow_reg;
 
     wire fixed_point_t dir_dot;
     wire dir_dot_overflow;
@@ -18,8 +28,16 @@ module sphere
     wire fixed_point_t dir_dot_sq;
     wire dir_dot_sq_overflow;
 
+    fixed_point_t center_origin_mag_sq_reg;
+    reg center_origin_mag_sq_overflow_reg;
+
     wire fixed_point_t center_origin_mag_sq;
     wire center_origin_mag_sq_overflow;
+
+    fixed_point_t radius_sq_reg1;
+    fixed_point_t radius_sq_reg2;
+    reg radius_sq_overflow_reg1;
+    reg radius_sq_overflow_reg2; 
 
     wire fixed_point_t radius_sq;
     wire radius_sq_overflow;
@@ -43,24 +61,24 @@ module sphere
 
     // l . (o - c)
     vector_dot_product dir_vdot (
-        .op1(ray),
-        .op2(center_origin),
+        .op1(ray_reg),
+        .op2(center_origin_reg),
         .result(dir_dot),
         .overflow(dir_dot_overflow)
     );
 
     // (l . (o - c)) ^ 2
     fixed_point_mul dir_dot_sq_mul (
-        .op1(dir_dot),
-        .op2(dir_dot),
+        .op1(dir_dot_reg),
+        .op2(dir_dot_reg),
         .result(dir_dot_sq),
         .overflow(dir_dot_sq_overflow)
     );
 
     // || o - c || ^ 2
     vector_dot_product center_origin_mag_sq_vdot (
-        .op1(center),
-        .op2(center),
+        .op1(center_origin_reg),
+        .op2(center_origin_reg),
         .result(center_origin_mag_sq),
         .overflow(center_origin_mag_sq_overflow)
     );
@@ -76,7 +94,7 @@ module sphere
     // || o - c || ^ 2 - r ^ 2
     fixed_point_sub discriminant_partial_sub (
         .op1(center_origin_mag_sq),
-        .op2(radius_sq),
+        .op2(radius_sq_reg2),
         .result(discriminant_partial),
         .overflow(discriminant_partial_overflow)
     );
@@ -89,16 +107,36 @@ module sphere
         .overflow(discriminant_overflow)
     );
 
-    assign overflow = center_origin_overflow 
-                        | dir_dot_overflow
+    assign overflow = center_origin_overflow_reg2
+                        | dir_dot_overflow_reg
                         | dir_dot_sq_overflow
-                        | center_origin_mag_sq_overflow
-                        | radius_sq_overflow
+                        | center_origin_mag_sq_overflow_reg
+                        | radius_sq_overflow_reg2
                         | discriminant_partial_overflow
                         | discriminant_overflow;
 
     assign discriminant_sign = discriminant[`FIXED_W-1];
 
-    assign intersection.intersects = ~discriminant_sign & ~overflow;
+    always @(posedge pixel_clk) begin
+        center_origin_reg <= center_origin;
+        center_origin_overflow_reg1 <= center_origin_overflow;
+        center_origin_overflow_reg2 <= center_origin_overflow_reg1;
+
+        radius_sq_reg1 <= radius_sq;
+        radius_sq_reg2 <= radius_sq_reg1;
+
+        radius_sq_overflow_reg1 <= radius_sq_overflow;
+        radius_sq_overflow_reg2 <= radius_sq_overflow_reg1;
+
+        ray_reg <= ray;
+
+        dir_dot_reg <= dir_dot;
+        dir_dot_overflow_reg = dir_dot_overflow;
+
+        center_origin_mag_sq_overflow_reg <= center_origin_mag_sq_overflow;
+        center_origin_mag_sq_reg <= center_origin_mag_sq;
+
+        intersection.intersects <= ~discriminant_sign & ~overflow;
+    end
 
 endmodule
