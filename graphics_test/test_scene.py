@@ -59,4 +59,9 @@ def scene_test(dut):
     tb = SceneTestbench(dut)
     yield tb.initialize()
 
+    dut.sphere_x = 0
+    dut.sphere_y = 0
+    dut.sphere_z = 0x4000
+    dut.sphere_radius = 0x2000
+
     yield tb.get_image()

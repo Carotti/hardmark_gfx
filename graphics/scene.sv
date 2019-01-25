@@ -1,5 +1,11 @@
 module scene (
     input pixel_clk,
+    input hsync,
+    input vsync,
+    input [23:0] sphere_x,
+    input [23:0] sphere_y,
+    input [23:0] sphere_z,
+    input [23:0] sphere_radius,
     output [31:0] pixel_data
 );
 
@@ -9,12 +15,13 @@ module scene (
 
     wire vector_t view_ray;
 
-    wire fixed_point_t sphere_radius;
     wire vector_t sphere_center;
     wire intersection_t sphere_1_intersection;
 
     camera main_camera (
         .pixel_clk(pixel_clk),
+        .hsync(hsync),
+        .vsync(vsync),
         .ray(view_ray)
     );
 
@@ -26,11 +33,10 @@ module scene (
         .intersection(sphere_1_intersection)
     );
 
-    assign sphere_radius = 'h3800; // 1.75
-    assign sphere_center.x = 0;
-    assign sphere_center.y = 0;
-    assign sphere_center.z = 'h4000; // 2.0
+    assign sphere_center.x = sphere_x;
+    assign sphere_center.y = sphere_y;
+    assign sphere_center.z = sphere_z;
 
-    assign pixel_data = sphere_1_intersection.intersects ? 32'hff0000ff : 32'h000000ff;
+    assign pixel_data = sphere_1_intersection.intersects ? 32'hff0000ff : 32'h00000000;
 
 endmodule

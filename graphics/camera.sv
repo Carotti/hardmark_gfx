@@ -1,17 +1,19 @@
 module camera
 (
     input pixel_clk,
+    input hsync,
+    input vsync,
     output vector::vector_t ray
 );
-    parameter hWidth = 1680;
-    parameter hFrontPorch = 48;
-    parameter hBackPorch = 80;
-    parameter hSyncWidth = 32;
+    parameter hWidth = 1280;
+    parameter hFrontPorch = 72;
+    parameter hBackPorch = 216;
+    parameter hSyncWidth = 80;
     
-    parameter vWidth = 1050;
+    parameter vWidth = 720;
     parameter vFrontPorch = 3;
-    parameter vBackPorch = 21;
-    parameter vSyncWidth = 6;
+    parameter vBackPorch = 22;
+    parameter vSyncWidth = 5;
 
     import fixed_point::*;
     import vector::*;
@@ -41,9 +43,24 @@ module camera
     initial hCount = 0;
     initial vCount = 0;
 
+    reg hsync_old;
+    reg vsync_old;
+
     always @(posedge pixel_clk) begin
-        hCount <= hReset ? 0 : hCount + 1;
-        vCount <= hReset ? (vReset ? 0 : vCount + 1) : vCount;
+        if (~hsync_old & hsync) begin
+            hCount <= hWidth + hFrontPorch;
+        end else begin
+            hCount <= hReset ? 0 : hCount + 1;
+        end
+
+        if (~vsync_old & vsync) begin
+            vCount <= vWidth + vFrontPorch;
+        end else begin
+            vCount <= hReset ? (vReset ? 0 : vCount + 1) : vCount;
+        end
+
+        hsync_old = hsync;
+        vsync_old = vsync;
     end
 
 endmodule
