@@ -6,7 +6,9 @@ module scene (
     input [23:0] sphere_y,
     input [23:0] sphere_z,
     input [23:0] sphere_radius,
-    output [31:0] pixel_data
+    output [31:0] pixel_data,
+    output [10:0] hcount,
+    output [10:0] vcount
 );
 
     import fixed_point::*;
@@ -22,7 +24,9 @@ module scene (
         .pixel_clk(pixel_clk),
         .hsync(hsync),
         .vsync(vsync),
-        .ray(view_ray)
+        .ray(view_ray),
+        .hcount(hcount),
+        .vcount(vcount)
     );
 
     sphere sphere_1 (

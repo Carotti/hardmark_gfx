@@ -3,7 +3,9 @@ module camera
     input pixel_clk,
     input hsync,
     input vsync,
-    output vector::vector_t ray
+    output vector::vector_t ray,
+    output [10:0] hcount,
+    output [10:0] vcount
 );
     parameter hWidth = 1280;
     parameter hFrontPorch = 72;
@@ -20,6 +22,9 @@ module camera
 
     reg [$clog2(hWidth + hFrontPorch + hSyncWidth + hBackPorch) - 1:0] hCount;
     reg [$clog2(vWidth + vFrontPorch + vSyncWidth + vBackPorch) - 1:0] vCount;
+    
+    assign hcount = hCount;
+    assign vcount = vCount;
 
     wire hReset;
     wire vReset;
